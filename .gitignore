@@ -1,0 +1,24 @@
+# Environment variables & secrets
+.env
+
+# Python cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# User uploads & generated assets
+uploads/
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
