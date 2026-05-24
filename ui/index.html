@@ -852,24 +852,57 @@
 
         function displayResults(artifacts) {
             if (artifacts.blog_post) {
-                document.getElementById('outputBlog').innerHTML = `<div class="formatted-markdown">${escapeHtml(artifacts.blog_post)}</div>`;
+                document.getElementById('outputBlog').innerHTML = `<div class="formatted-markdown">${renderMarkdown(artifacts.blog_post)}</div>`;
             } else {
                 document.getElementById('outputBlog').innerHTML = `<div class="placeholder-box"><i class="fa-regular fa-file-lines"></i><p>No blog post generated.</p></div>`;
             }
 
             if (artifacts.carousel) {
-                document.getElementById('outputCarousel').innerHTML = `<div class="formatted-markdown">${escapeHtml(artifacts.carousel)}</div>`;
+                document.getElementById('outputCarousel').innerHTML = `<div class="formatted-markdown">${renderMarkdown(artifacts.carousel)}</div>`;
             } else {
                 document.getElementById('outputCarousel').innerHTML = `<div class="placeholder-box"><i class="fa-solid fa-images"></i><p>No social slides generated.</p></div>`;
             }
 
             if (artifacts.video) {
                 const videoData = typeof artifacts.video === 'string' ? { script: artifacts.video } : artifacts.video;
-                const videoHtml = videoData.video_url ? `<video width="100%" controls style="border-radius:12px; margin-bottom:1rem;"><source src="${videoData.video_url}"></video>` : '';
-                document.getElementById('outputVideo').innerHTML = `<div class="formatted-markdown">${videoHtml}${escapeHtml(videoData.script)}</div>`;
+                const videoHtml = videoData.video_url ? `<video width="100%" controls style="border-radius:12px; margin-bottom:1rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);"><source src="${videoData.video_url}"></video>` : '';
+                document.getElementById('outputVideo').innerHTML = `<div class="formatted-markdown">${videoHtml}${renderMarkdown(videoData.script)}</div>`;
             } else {
                 document.getElementById('outputVideo').innerHTML = `<div class="placeholder-box"><i class="fa-solid fa-video"></i><p>No video script generated.</p></div>`;
             }
+        }
+
+        function renderMarkdown(text) {
+            if (!text) return "";
+            let html = escapeHtml(text);
+            
+            // Render Headers (match starting lines)
+            html = html.replace(/^### (.*$)/gim, '<h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--accent-secondary);">$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2 style="margin-top: 1.8rem; margin-bottom: 0.7rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.3rem;">$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1 style="font-size: 1.6rem; color: var(--text-primary); margin-bottom: 1rem;">$1</h1>');
+            
+            // Render bold labels
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Render italic
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Render inline code
+            html = html.replace(/`(.*?)`/g, '<code style="background: rgba(255,255,255,0.07); padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace; font-size: 0.9em; border: 1px solid rgba(255,255,255,0.05); color: #818cf8;">$1</code>');
+            
+            // Render markdown images (e.g. ![Slide 1 Image](/generated/slide_abc.jpg))
+            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<div style="text-align: center; margin: 1.5rem 0;"><img src="$2" alt="$1" style="max-width: 100%; max-height: 400px; border-radius: 16px; border: 1px solid var(--border-glass); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);"><p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">$1</p></div>');
+            
+            // Render bullet points
+            html = html.replace(/^\- (.*$)/gim, '<li style="margin-left: 1.5rem; margin-bottom: 0.25rem;">$1</li>');
+            
+            // Render horizontal rules
+            html = html.replace(/^---$/gim, '<hr style="border: 0; height: 1px; background: var(--border-glass); margin: 2rem 0;">');
+            
+            // Render linebreaks (preserve newlines but handle markdown spacing)
+            html = html.replace(/\n/g, '<br>');
+            
+            return html;
         }
 
         function escapeHtml(text) {
