@@ -1,13 +1,13 @@
-# 🚀 AMCE: Agentic Multi-Channel Content Engine
+# 🚀 Content Studio: Agentic Multi-Channel Content Engine
 **Architectural Blueprint & User Guide**
 
-Welcome to the **Agentic Multi-Channel Content Engine (AMCE)**. AMCE is an autonomous content orchestration system designed to ingest complex research documents (PDFs), visual template layouts, and text drafts to perform agent-based validation and generate ready-to-publish assets for multiple channels (Blog, Social Media Carousels, and Video).
+Welcome to the **Agentic Multi-Channel Content Engine (Content Studio)**. Content Studio is an autonomous content orchestration system designed to ingest complex research documents (PDFs), visual template layouts, and text drafts to perform agent-based validation and generate ready-to-publish assets for multiple channels (Blog, Social Media Carousels, and Video).
 
 ---
 
 ## 🗺️ System Architecture
 
-AMCE is designed with a lightweight, high-performance architecture utilizing **FastAPI** to serve both the REST API and the Glassmorphism-style frontend, and **LangChain** to coordinate the multi-agent execution pipeline.
+Content Studio is designed with a lightweight, high-performance architecture utilizing **FastAPI** to serve both the REST API and the Glassmorphism-style frontend, and **LangChain** to coordinate the multi-agent execution pipeline.
 
 ```mermaid
 graph TD

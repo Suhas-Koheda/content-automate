@@ -1,12 +1,17 @@
-import uuid
 import asyncio
-from fastapi import FastAPI,BackgroundTasks,HTTPException
-from app.models.generation import GenerationRequest,GenerationResponse
-from app.models.status import StatusResponse
+import os
+import shutil
+import uuid
 
-tasks_db={}
+from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.llm.pipeline_runner import run_agent_pipeline
+from app.models.generation import GenerationRequest, GenerationResponse
+from app.models.status import StatusResponse
+
+tasks_db = {}
 
 async def run_generation_execution(task_id: str, request: GenerationRequest):
     try:
@@ -33,14 +38,7 @@ async def run_generation_execution(task_id: str, request: GenerationRequest):
         tasks_db[task_id]["artifacts"] = {"error": str(e)}
 
 
-import os
-import shutil
-from fastapi import UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
-
 app = FastAPI()
-
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -81,9 +79,6 @@ async def get_status(task_id: str):
         artifacts=task_data["artifacts"]
     )
 
-from fastapi.staticfiles import StaticFiles
-
-# Ensure ui directory exists
 os.makedirs("ui", exist_ok=True)
 
 app.mount("/", StaticFiles(directory="ui", html=True), name="ui")
