@@ -80,7 +80,7 @@ def create_fallback_graphic(slide, image_path: str):
     draw.text((65, 110), f"Direction: {slide.visual_direction}", fill=(180, 180, 180), font=font_footer)
     
     # Text wrap rendering for Overlay Text
-    overlay_text = slide.overlay_text
+    overlay_text = slide.overlay_text.replace("₹", "Rs. ")
     words = overlay_text.split()
     lines = []
     current_line = []

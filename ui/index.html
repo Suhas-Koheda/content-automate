@@ -900,6 +900,10 @@
                         method: 'POST',
                         body: formData
                     });
+                    if (!uploadRes.ok) {
+                        const errText = await uploadRes.text();
+                        throw new Error(`Upload failed (${uploadRes.status}): ${errText || uploadRes.statusText}`);
+                    }
                     const uploadData = await uploadRes.json();
                     pdfPaths = uploadData.pdf_paths || [];
                 }
@@ -914,6 +918,10 @@
                         method: 'POST',
                         body: imgFormData
                     });
+                    if (!imgRes.ok) {
+                        const errText = await imgRes.text();
+                        throw new Error(`Template upload failed (${imgRes.status}): ${errText || imgRes.statusText}`);
+                    }
                     const imgData = await imgRes.json();
                     templatePath = imgData.pdf_paths ? imgData.pdf_paths[0] : null;
                 }
@@ -940,6 +948,10 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(reqBody)
                 });
+                if (!genRes.ok) {
+                    const errText = await genRes.text();
+                    throw new Error(`Generation initiation failed (${genRes.status}): ${errText || genRes.statusText}`);
+                }
                 
                 const genData = await genRes.json();
                 const taskId = genData.task_id;
@@ -967,6 +979,10 @@
             const interval = setInterval(async () => {
                 try {
                     const res = await fetch(`/api/status/${taskId}`);
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        throw new Error(`Status check failed (${res.status}): ${errText || res.statusText}`);
+                    }
                     const data = await res.json();
 
                     statusText.textContent = `Status: ${data.status.toUpperCase()}`;

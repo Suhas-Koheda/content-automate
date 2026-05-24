@@ -24,7 +24,8 @@ async def run_generation_execution(task_id: str, request: GenerationRequest):
             pdf_paths=request.pdf_paths,
             style_sample=request.style_sample,
             channels=request.channels,
-            template_path=request.template_path
+            template_path=request.template_path,
+            task_id=task_id
         )
         
         if "error" in results:

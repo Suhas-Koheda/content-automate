@@ -8,11 +8,12 @@ def initialize_state(
     pdf_paths,
     style_sample,
     channels,
-    template_path
+    template_path,
+    task_id=None
 ):
     import uuid
     return {
-        "task_id": str(uuid.uuid4()),
+        "task_id": task_id or str(uuid.uuid4()),
         "input": {
             "source_text": source_text,
             "pdf_paths": pdf_paths,
@@ -50,14 +51,16 @@ async def run_agent_pipeline(
     pdf_paths: list[str],
     style_sample: str,
     channels: list,
-    template_path: str = None
+    template_path: str = None,
+    task_id: str = None
 ):
     state = initialize_state(
         source_text,
         pdf_paths,
         style_sample,
         channels,
-        template_path
+        template_path,
+        task_id
     )
 
     try:
