@@ -14,17 +14,17 @@ fast_llm = ChatGoogleGenerativeAI(
 )
 
 pro_llm = ChatGoogleGenerativeAI(
-    model="gemini-3.1-pro-preview",
+    model="gemini-3.5-flash",
     temperature=0.5
 )
 
 critic_llm = ChatGoogleGenerativeAI(
-    model="gemini-3.1-pro-preview",
+    model="gemini-3.5-flash",
     temperature=0.2
 )
 
 creative_llm = ChatGoogleGenerativeAI(
-    model="gemini-3.1-pro-preview",
+    model="gemini-3.5-flash",
     temperature=0.8
 )
 

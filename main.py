@@ -27,10 +27,16 @@ async def run_generation_execution(task_id: str, request: GenerationRequest):
             template_path=request.template_path
         )
         
-        tasks_db[task_id]["status"] = "completed"
-        tasks_db[task_id]["current_agent"] = None
-        tasks_db[task_id]["progress_percentage"] = 100
-        tasks_db[task_id]["artifacts"] = results
+        if "error" in results:
+            tasks_db[task_id]["status"] = "failed"
+            tasks_db[task_id]["current_agent"] = None
+            tasks_db[task_id]["progress_percentage"] = 100
+            tasks_db[task_id]["artifacts"] = results
+        else:
+            tasks_db[task_id]["status"] = "completed"
+            tasks_db[task_id]["current_agent"] = None
+            tasks_db[task_id]["progress_percentage"] = 100
+            tasks_db[task_id]["artifacts"] = results
     except Exception as e:
         tasks_db[task_id]["status"] = "failed"
         tasks_db[task_id]["current_agent"] = None
@@ -47,16 +53,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from pathlib import Path
+
+ALLOWED_TYPES = [
+    "application/pdf",
+    "image/png",
+    "image/jpeg",
+    "image/jpg"
+]
+
 @app.post("/api/upload")
 async def upload_files(files: list[UploadFile] = File(...)):
-
     os.makedirs("uploads", exist_ok=True)
-
     file_paths = []
 
     for file in files:
+        # Validate MIME type
+        if file.content_type not in ALLOWED_TYPES:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File type {file.content_type} is not allowed. Supported formats: PDF, PNG, JPEG."
+            )
 
-        file_path = os.path.join("uploads", file.filename)
+        # Clean/sanitize filename to prevent directory traversal
+        safe_filename = Path(file.filename).name
+        if not safe_filename or safe_filename in [".", ".."]:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid filename."
+            )
+
+        file_path = os.path.join("uploads", safe_filename)
 
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
