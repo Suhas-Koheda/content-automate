@@ -59,6 +59,8 @@ Avoid:
 - low-information slides
 
 Return well-structured formatted output.
+
+{format_instructions}
         """
     ),
 

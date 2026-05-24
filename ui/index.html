@@ -730,7 +730,7 @@
             document.getElementById('outputCarousel').innerHTML = `<div class="placeholder-box"><i class="fa-solid fa-spinner fa-spin"></i><p>Waiting for context...</p></div>`;
             document.getElementById('outputVideo').innerHTML = `<div class="placeholder-box"><i class="fa-solid fa-spinner fa-spin"></i><p>Waiting for context...</p></div>`;
 
-            let pdfPath = null;
+            let pdfPaths = [];
             let templatePath = null;
 
             try {
@@ -740,16 +740,17 @@
                     progressBar.style.width = "10%";
                     progressText.textContent = "10%";
                     
-                    // We upload the first PDF for illustration (or the folder context)
                     const formData = new FormData();
-                    formData.append('file', uploadedFiles[0]); // Upload first PDF
+                    for (let file of uploadedFiles) {
+                        formData.append('files', file);
+                    }
                     
                     const uploadRes = await fetch('/api/upload', {
                         method: 'POST',
                         body: formData
                     });
                     const uploadData = await uploadRes.json();
-                    pdfPath = uploadData.pdf_path;
+                    pdfPaths = uploadData.pdf_paths || [];
                 }
 
                 // Upload image template if any
@@ -757,13 +758,13 @@
                 if (templateFileInput.files.length > 0) {
                     statusText.textContent = "Uploading image template...";
                     const imgFormData = new FormData();
-                    imgFormData.append('file', templateFileInput.files[0]);
+                    imgFormData.append('files', templateFileInput.files[0]);
                     const imgRes = await fetch('/api/upload', {
                         method: 'POST',
                         body: imgFormData
                     });
                     const imgData = await imgRes.json();
-                    templatePath = imgData.pdf_path;
+                    templatePath = imgData.pdf_paths ? imgData.pdf_paths[0] : null;
                 }
 
                 // Step 2: Trigger Generation
@@ -777,7 +778,7 @@
 
                 const reqBody = {
                     source_text: document.getElementById('sourceText').value,
-                    pdf_path: pdfPath || "uploads", // If empty, defaults to directory
+                    pdf_paths: pdfPaths,
                     style_sample: document.getElementById('styleSample').value,
                     channels: channels,
                     template_path: templatePath

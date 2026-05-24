@@ -21,7 +21,7 @@ async def run_generation_execution(task_id: str, request: GenerationRequest):
         
         results = await run_agent_pipeline(
             source_text=request.source_text,
-            pdf_path=request.pdf_path,
+            pdf_paths=request.pdf_paths,
             style_sample=request.style_sample,
             channels=request.channels,
             template_path=request.template_path
@@ -48,13 +48,22 @@ app.add_middleware(
 )
 
 @app.post("/api/upload")
-async def upload_file(file: UploadFile = File(...)):
-    os.makedirs("uploads", exist_ok=True)
-    file_path = os.path.join("uploads", file.filename)
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    return {"pdf_path": file_path}
+async def upload_files(files: list[UploadFile] = File(...)):
 
+    os.makedirs("uploads", exist_ok=True)
+
+    file_paths = []
+
+    for file in files:
+
+        file_path = os.path.join("uploads", file.filename)
+
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        file_paths.append(file_path)
+
+    return {"pdf_paths": file_paths}
 @app.post("/api/generate", response_model=GenerationResponse)
 async def generate(request: GenerationRequest, background_tasks: BackgroundTasks):
     task_id = str(uuid.uuid4())
