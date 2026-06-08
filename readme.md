@@ -121,3 +121,9 @@ Run the FastAPI development server:
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 Open **http://127.0.0.1:8000** in your browser to view the interactive dashboard.
+
+---
+
+## 🔄 Recent Updates
+
+- **2026-06-08:** Clarified setup and added quick-start notes; minor editorial improvements.
