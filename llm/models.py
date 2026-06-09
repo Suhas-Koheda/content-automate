@@ -1,15 +1,13 @@
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
-from google import genai
+import os
 
 load_dotenv()
-
-llm = ChatGoogleGenerativeAI(
-    model="gemini-3.5-flash",
-    temperature=0.3
+writer_model = ChatGoogleGenerativeAI(
+    model="gemini-1.5-flash",
+    temperature=0.1,
+    api_key=os.getenv("GOOGLE_API_KEY")
 )
-
-genai_client = genai.Client()
 
 IMAGE_MODEL_FAST = "imagen-4.0-fast-generate-001"
 IMAGE_MODEL_PRO = "imagen-4.0-generate-001"
