@@ -3,9 +3,7 @@ from .model import writer_model
 from langchain_core.prompts import ChatPromptTemplate
 from models.llm_output import RefinedBLog
 import json
-import os
-from dotenv import load_dotenv
-load_dotenv()
+
 writer_prompt = ChatPromptTemplate.from_messages([
     (
         "system",

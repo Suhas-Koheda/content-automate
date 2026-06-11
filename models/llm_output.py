@@ -9,8 +9,9 @@ class RefinedBLog(BaseModel):
     references:List[Evidence]
 class ImageScript(BaseModel):
     _id:str
-    text:str
+    image_prompt:str
     scene_no:int
+    narration:str
 class VideoScript(BaseModel):
     _id:str
     text:str
