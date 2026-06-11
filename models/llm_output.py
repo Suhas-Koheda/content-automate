@@ -10,7 +10,7 @@ class RefinedBLog(BaseModel):
 class ImageScript(BaseModel):
     _id:str
     text:str
-    scene_no=int
+    scene_no:int
 class VideoScript(BaseModel):
     _id:str
     text:str
